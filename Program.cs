@@ -1,4 +1,6 @@
 using Chess.Classes;
+using ChessAPI.Services;
+using System.Text.Json.Serialization;
 
 namespace ChessAPI
 {
@@ -27,13 +29,13 @@ namespace ChessAPI
                                .AllowAnyHeader();
                     });
             });
-
+            builder.Services.AddSingleton<ChessService>();
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.Converters.Add(new PieceJsonConverter());
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
-
 
             var app = builder.Build();
 
