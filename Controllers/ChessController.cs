@@ -19,33 +19,28 @@ namespace ChessAPI.Controllers
         }
 
         [HttpGet("initialState")]
-        [SwaggerOperation(Summary = "Get the initial board state for a chess game")]
-        [ProducesResponseType(typeof(Gameboard), 200)]
-        public IActionResult GetInitialBoard()
+        [SwaggerOperation(
+            Summary = "Gets the initial gameboard and starting actions for the White team.")]
+        [ProducesResponseType(typeof(GameboardAndActionsDto), 200)]
+        public ActionResult<GameboardAndActionsDto> GetInitialBoard()
         {
             var gameboard = new Gameboard();
             gameboard.InitialiseStandardBoardState();
-            return Ok(gameboard);
-        }
-
-        [HttpPost("actions")]
-        [SwaggerOperation(Summary = "Get legal actions for the current team on the provided board")]
-        [ProducesResponseType(typeof(List<PieceActionDto>), 200)]
-        public IActionResult GetActionsForCurrentState([FromBody] Gameboard gameboard)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest("Gameboard parameter is either missing properties or is invalid.");
 
             var dictionaryActions = gameboard.CalculateTeamActions(gameboard.CurrentTeamColour);
             var dtoList = _chessService.DictionaryToPieceActionDto(dictionaryActions);
 
-            return Ok(dtoList);
+            var returnObject = new GameboardAndActionsDto { Gameboard = gameboard, Actions = dtoList };
+
+            return Ok(returnObject);
         }
 
         [HttpPost("perform")]
-        [SwaggerOperation(Summary = "Perform the provided Action on the provided board")]
-        [ProducesResponseType(typeof(Gameboard), 200)]
-        public IActionResult PerformAction([FromBody] GameboardActionRequest gameboardActionRequest)
+        [SwaggerOperation(
+            Summary = "Perform the provided Action on the provided board.",
+            Description = "Returns the new gameboard after the action is performed, as well as actions available to the next team.")]
+        [ProducesResponseType(typeof(GameboardAndActionsDto), 200)]
+        public ActionResult<GameboardAndActionsDto> PerformAction([FromBody] PerformGameboardActionRequest gameboardActionRequest)
         {
             if (!ModelState.IsValid)
                 return BadRequest("Gameboard parameter or Action parameter is either missing properties or is invalid.");
@@ -53,7 +48,12 @@ namespace ChessAPI.Controllers
             var gameboard = gameboardActionRequest.Gameboard;
             gameboard.PerformAction(gameboardActionRequest.Action);
 
-            return Ok(gameboard);
+            var dictionaryActions = gameboard.CalculateTeamActions(gameboard.CurrentTeamColour);
+            var dtoList = _chessService.DictionaryToPieceActionDto(dictionaryActions);
+
+            var returnObject = new GameboardAndActionsDto { Gameboard = gameboard, Actions = dtoList };
+
+            return Ok(returnObject);
         }
     }
 }
