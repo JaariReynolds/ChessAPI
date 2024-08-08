@@ -2,7 +2,7 @@
 
 namespace ChessAPI.Models
 {
-    public class GameboardActionRequest
+    public class PerformGameboardActionRequest
     {
         public Gameboard Gameboard { get; set; }
         public Action Action { get; set; }
