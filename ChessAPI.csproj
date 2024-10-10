@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ChessBot\ChessBot.csproj" />
     <ProjectReference Include="..\Chess\Chess.csproj" />
   </ItemGroup>
 
