@@ -61,7 +61,7 @@ namespace ChessAPI.Controllers
         [SwaggerOperation(
             Summary = "Performs the bot's action on the provided board",
             Description = "Returns the new gameboard after the action is performed, as well as actions available to the next team.")]
-        public ActionResult<GameboardAndActionsDto> PerformBotAction([FromBody] Gameboard gameboard)
+        public async Task<ActionResult<GameboardAndActionsDto>> PerformBotAction([FromBody] Gameboard gameboard)
         {
             if (!ModelState.IsValid)
                 return BadRequest("Gameboard parameter is either missing properties or is invalid.");
@@ -74,6 +74,11 @@ namespace ChessAPI.Controllers
             var dtoList = _chessService.DictionaryToPieceActionDto(dictionaryActions);
 
             var returnObject = new GameboardAndActionsDto { Gameboard = gameboard, Actions = dtoList };
+
+            var rnd = new Random();
+            int thinkingTime = rnd.Next(0, 1000); // between 0ms and 1000ms of simulated "thinking" time
+
+            await Task.Delay(thinkingTime);
 
             return Ok(returnObject);
         }
