@@ -29,7 +29,7 @@ namespace ChessAPI
                                .AllowAnyHeader();
                     });
             });
-            builder.Services.AddSingleton<ChessService>();
+            builder.Services.AddScoped<IChessService, ChessService>();
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
