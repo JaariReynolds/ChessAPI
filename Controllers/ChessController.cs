@@ -12,8 +12,8 @@ namespace ChessAPI.Controllers
     [ApiController]
     public class ChessController : ControllerBase
     {
-        private readonly ChessService _chessService;
-        public ChessController(ChessService chessService)
+        private readonly IChessService _chessService;
+        public ChessController(IChessService chessService)
         {
             _chessService = chessService;
         }
@@ -67,7 +67,7 @@ namespace ChessAPI.Controllers
                 return BadRequest("Gameboard parameter is either missing properties or is invalid.");
 
             var chessBot = new ChessBot.ChessBot(ChessBot.BotDifficulty.Easy, gameboard);
-            var chessBotAction = chessBot.CalculateBestAction();
+            var chessBotAction = chessBot.CalculateBestAction(1);
             gameboard.PerformAction(chessBotAction);
 
             var dictionaryActions = gameboard.CalculateTeamActions(gameboard.CurrentTeamColour);
@@ -75,10 +75,10 @@ namespace ChessAPI.Controllers
 
             var returnObject = new GameboardAndActionsDto { Gameboard = gameboard, Actions = dtoList };
 
-            var rnd = new Random();
-            int thinkingTime = rnd.Next(0, 1000); // between 0ms and 1000ms of simulated "thinking" time
+            //var rnd = new Random();
+            //int thinkingTime = rnd.Next(0, 1000); // between 0ms and 1000ms of simulated "thinking" time
 
-            await Task.Delay(thinkingTime);
+            //await Task.Delay(thinkingTime);
 
             return Ok(returnObject);
         }
