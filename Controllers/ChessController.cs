@@ -24,15 +24,8 @@ namespace ChessAPI.Controllers
         [ProducesResponseType(typeof(GameboardAndActionsDto), 200)]
         public ActionResult<GameboardAndActionsDto> GetInitialBoard()
         {
-            var gameboard = new Gameboard();
-            gameboard.InitialiseStandardBoardState();
-
-            var dictionaryActions = gameboard.CalculateTeamActions(gameboard.CurrentTeamColour);
-            var dtoList = _chessService.DictionaryToPieceActionDto(dictionaryActions);
-
-            var returnObject = new GameboardAndActionsDto { Gameboard = gameboard, Actions = dtoList };
-
-            return Ok(returnObject);
+            var result = _chessService.GetInitialBoard();
+            return Ok(result);
         }
 
         [HttpPost("perform")]
@@ -43,17 +36,10 @@ namespace ChessAPI.Controllers
         public ActionResult<GameboardAndActionsDto> PerformAction([FromBody] PerformGameboardActionRequest gameboardActionRequest)
         {
             if (!ModelState.IsValid)
-                return BadRequest("Gameboard parameter or Action parameter is either missing properties or is invalid.");
+                return BadRequest(ModelState);
 
-            var gameboard = gameboardActionRequest.Gameboard;
-            gameboard.PerformAction(gameboardActionRequest.Action);
-
-            var dictionaryActions = gameboard.CalculateTeamActions(gameboard.CurrentTeamColour);
-            var dtoList = _chessService.DictionaryToPieceActionDto(dictionaryActions);
-
-            var returnObject = new GameboardAndActionsDto { Gameboard = gameboard, Actions = dtoList };
-
-            return Ok(returnObject);
+            var result = _chessService.PerformAction(gameboardActionRequest.Gameboard, gameboardActionRequest.Action);
+            return Ok(result);
         }
 
 
@@ -61,26 +47,13 @@ namespace ChessAPI.Controllers
         [SwaggerOperation(
             Summary = "Performs the bot's action on the provided board",
             Description = "Returns the new gameboard after the action is performed, as well as actions available to the next team.")]
-        public async Task<ActionResult<GameboardAndActionsDto>> PerformBotAction([FromBody] Gameboard gameboard)
+        public ActionResult<GameboardAndActionsDto> PerformBotAction([FromBody] Gameboard gameboard)
         {
             if (!ModelState.IsValid)
-                return BadRequest("Gameboard parameter is either missing properties or is invalid.");
+                return BadRequest(ModelState);
 
-            var chessBot = new ChessBot.ChessBot(ChessBot.BotDifficulty.Easy, gameboard);
-            var chessBotAction = chessBot.CalculateBestAction(1);
-            gameboard.PerformAction(chessBotAction);
-
-            var dictionaryActions = gameboard.CalculateTeamActions(gameboard.CurrentTeamColour);
-            var dtoList = _chessService.DictionaryToPieceActionDto(dictionaryActions);
-
-            var returnObject = new GameboardAndActionsDto { Gameboard = gameboard, Actions = dtoList };
-
-            //var rnd = new Random();
-            //int thinkingTime = rnd.Next(0, 1000); // between 0ms and 1000ms of simulated "thinking" time
-
-            //await Task.Delay(thinkingTime);
-
-            return Ok(returnObject);
+            var result = _chessService.PerformBotAction(gameboard);
+            return Ok(result);
         }
     }
 }
