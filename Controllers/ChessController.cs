@@ -1,5 +1,4 @@
-﻿using Chess.Classes;
-using ChessAPI.Models;
+﻿using ChessAPI.Models;
 using ChessAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -20,7 +19,7 @@ namespace ChessAPI.Controllers
 
         [HttpGet("initialState")]
         [SwaggerOperation(
-            Summary = "Gets the initial gameboard and starting actions for the White team.")]
+            Summary = "Gets the initial Gameboard and starting Actions for the White team.")]
         [ProducesResponseType(typeof(GameboardAndActionsDto), 200)]
         public ActionResult<GameboardAndActionsDto> GetInitialBoard()
         {
@@ -42,17 +41,16 @@ namespace ChessAPI.Controllers
             return Ok(result);
         }
 
-
         [HttpPost("botAction")]
         [SwaggerOperation(
-            Summary = "Performs the bot's action on the provided board",
+            Summary = "Performs the bot's Action on the provided board",
             Description = "Returns the new gameboard after the action is performed, as well as actions available to the next team.")]
-        public ActionResult<GameboardAndActionsDto> PerformBotAction([FromBody] Gameboard gameboard)
+        public ActionResult<GameboardAndActionsDto> PerformBotAction([FromBody] PerformBotActionRequest botActionRequest)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = _chessService.PerformBotAction(gameboard);
+            var result = _chessService.PerformBotAction(botActionRequest.Gameboard);
             return Ok(result);
         }
     }
