@@ -58,7 +58,7 @@ namespace ChessAPI.Services
         public GameboardAndActionsDto PerformBotAction(Gameboard gameboard)
         {
             var chessBot = new ChessBot.ChessBot(ChessBot.BotDifficulty.Easy, gameboard);
-            var chessBotAction = chessBot.CalculateBestAction(1);
+            var chessBotAction = chessBot.CalculateBestAction(3);
             gameboard.PerformAction(chessBotAction);
 
             var actionsDto = GetActionsDto(gameboard);
