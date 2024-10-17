@@ -4,7 +4,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 # Set the working directory in the container
 WORKDIR /src
 
-# Copy the ChessAPI, ChessBot, and ChessLogic project files
+# Copy only the necessary project files into the container
 COPY ChessAPI/ChessAPI.csproj ChessAPI/
 COPY ChessBot/ChessBot.csproj ChessBot/
 COPY ChessLogic/ChessLogic.csproj ChessLogic/
@@ -13,9 +13,7 @@ COPY ChessLogic/ChessLogic.csproj ChessLogic/
 RUN dotnet restore "ChessAPI/ChessAPI.csproj"
 
 # Copy the rest of the application files for all projects
-COPY ChessAPI/. ChessAPI/
-COPY ChessBot/. ChessBot/
-COPY ChessLogic/. ChessLogic/
+COPY . .
 
 # Build the project
 WORKDIR "/src/ChessAPI"
@@ -33,3 +31,7 @@ EXPOSE 80
 
 # Set the entry point for the application
 ENTRYPOINT ["dotnet", "ChessAPI.dll"]
+
+
+
+
