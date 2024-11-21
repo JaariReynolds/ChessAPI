@@ -5,7 +5,7 @@ namespace ChessAPI.Services
 {
     public interface IChessService
     {
-        List<PieceActionDto> DictionaryToPieceActionListDto(Dictionary<Piece, List<Action>> dictionary);
+        List<PieceActionDto> ListToPieceActionDto(List<Action> dictionary);
         GameboardAndActionsDto GetInitialBoard();
         GameboardAndActionsDto PerformAction(Gameboard gameboard, Action requestedAction);
         GameboardAndActionsDto PerformBotAction(Gameboard gameboard);
@@ -16,24 +16,23 @@ namespace ChessAPI.Services
         /// <summary>
         /// Conversion from Dictionary to List, as Dictionaries without (string) Keys in JSON are not supported 
         /// </summary>
-        public List<PieceActionDto> DictionaryToPieceActionListDto(Dictionary<Piece, List<Action>> dictionary)
+        public List<PieceActionDto> ListToPieceActionDto(List<Action> actions)
         {
-            var dtoList = new List<PieceActionDto>();
-
-            if (dictionary.Count > 0)
-                dtoList = dictionary.Select(kvp => new PieceActionDto
+            var groupedActions = actions
+                .GroupBy(action => action.Piece)
+                .Select(group => new PieceActionDto
                 {
-                    Piece = kvp.Key,
-                    Actions = kvp.Value
+                    Piece = group.Key,
+                    Actions = group.ToList()
                 }).ToList();
 
-            return dtoList;
+            return groupedActions;
         }
 
         private List<PieceActionDto> GetActionsDto(Gameboard gameboard)
         {
-            var dictionaryActions = gameboard.CalculateTeamActions(gameboard.CurrentTeamColour);
-            return DictionaryToPieceActionListDto(dictionaryActions);
+            var actions = gameboard.CalculateTeamActions(gameboard.CurrentTeamColour);
+            return ListToPieceActionDto(actions);
         }
 
         public GameboardAndActionsDto GetInitialBoard()
