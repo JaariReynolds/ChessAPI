@@ -1,5 +1,6 @@
 ﻿using Chess.Classes;
 using ChessAPI.Models;
+using ChessBotNamespace;
 
 namespace ChessAPI.Services
 {
@@ -56,7 +57,7 @@ namespace ChessAPI.Services
 
         public GameboardAndActionsDto PerformBotAction(Gameboard gameboard)
         {
-            var chessBot = new ChessBot.ChessBot(ChessBot.BotDifficulty.Easy, gameboard);
+            var chessBot = new ChessBot(gameboard);
             var chessBotAction = chessBot.CalculateBestAction(3);
             gameboard.ProcessTurn(chessBotAction);
 
