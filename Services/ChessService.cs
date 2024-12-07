@@ -1,6 +1,7 @@
 ﻿using Chess.Classes;
 using ChessAPI.Models;
 using ChessBotNamespace;
+using System.Diagnostics;
 
 namespace ChessAPI.Services
 {
@@ -58,7 +59,14 @@ namespace ChessAPI.Services
         public GameboardAndActionsDto PerformBotAction(Gameboard gameboard)
         {
             var chessBot = new ChessBot(gameboard);
+
+            var stopwatch = Stopwatch.StartNew();
             var chessBotAction = chessBot.CalculateBestAction(3);
+
+            stopwatch.Stop();
+            Console.WriteLine($"Execution time: {stopwatch.ElapsedMilliseconds}ms");
+            Console.WriteLine("-----------------");
+
             gameboard.ProcessTurn(chessBotAction);
 
             var actionsDto = GetActionsDto(gameboard);
