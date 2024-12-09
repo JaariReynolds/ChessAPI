@@ -53,5 +53,14 @@ namespace ChessAPI.Controllers
             var result = _chessService.PerformBotAction(botActionRequest.Gameboard);
             return Ok(result);
         }
+
+        [HttpPost("fen")]
+        [SwaggerOperation(
+            Summary = "Imports the provided FEN",
+            Description = "Converts the FEN string into the equivalent Gameboard object, then returns the Gameboard as well as the available Actions for the current team.")]
+        public ActionResult<GameboardAndActionsDto> PostFEN([FromBody] ForsythEdwardsNotationRequest fenRequest)
+        {
+
+        }
     }
 }
