@@ -60,7 +60,11 @@ namespace ChessAPI.Controllers
             Description = "Converts the FEN string into the equivalent Gameboard object, then returns the Gameboard as well as the available Actions for the current team.")]
         public ActionResult<GameboardAndActionsDto> PostFEN([FromBody] ForsythEdwardsNotationRequest fenRequest)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
+            var result = _chessService.ParseFEN(fenRequest.FenString);
+            return Ok(result);
         }
     }
 }
