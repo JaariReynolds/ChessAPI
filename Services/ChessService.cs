@@ -12,7 +12,7 @@ namespace ChessAPI.Services
         GameboardAndActionsDto GetInitialBoard();
         GameboardAndActionsDto PerformAction(Gameboard gameboard, Action requestedAction);
         GameboardAndActionsDto PerformBotAction(Gameboard gameboard);
-        GameboardAndActionsDto ParseFEN(string fen);
+        GameboardAndActionsDto ParseFen(string fen);
     }
 
     public class ChessService : IChessService
@@ -76,9 +76,9 @@ namespace ChessAPI.Services
             return new GameboardAndActionsDto { Gameboard = gameboard, Actions = actionsDto };
         }
 
-        public GameboardAndActionsDto ParseFEN(string fen)
+        public GameboardAndActionsDto ParseFen(string fen)
         {
-            var gameboard = ForsythEdwardsNotation.ParseFEN(fen);
+            var gameboard = ForsythEdwardsNotation.ParseFen(fen);
             var actionsDto = GetActionsDto(gameboard);
             return new GameboardAndActionsDto { Gameboard = gameboard, Actions = actionsDto };
         }

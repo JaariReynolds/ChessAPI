@@ -58,12 +58,12 @@ namespace ChessAPI.Controllers
         [SwaggerOperation(
             Summary = "Imports the provided FEN",
             Description = "Converts the FEN string into the equivalent Gameboard object, then returns the Gameboard as well as the available Actions for the current team.")]
-        public ActionResult<GameboardAndActionsDto> PostFEN([FromBody] ForsythEdwardsNotationRequest fenRequest)
+        public ActionResult<GameboardAndActionsDto> PostFen([FromBody] ForsythEdwardsNotationRequest fenRequest)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = _chessService.ParseFEN(fenRequest.FenString);
+            var result = _chessService.ParseFen(fenRequest.FenString);
             return Ok(result);
         }
     }
