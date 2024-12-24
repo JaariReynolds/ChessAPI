@@ -9,10 +9,10 @@ namespace ChessAPI.Services
     public interface IChessService
     {
         List<PieceActionDto> ListToPieceActionDto(List<Action> dictionary);
-        GameboardAndActionsDto GetInitialBoard();
-        GameboardAndActionsDto PerformAction(Gameboard gameboard, Action requestedAction);
-        GameboardAndActionsDto PerformBotAction(Gameboard gameboard);
-        GameboardAndActionsDto ParseFen(string fen);
+        ApiResponse<GameboardAndActionsDto> GetInitialBoard();
+        ApiResponse<GameboardAndActionsDto> PerformAction(Gameboard gameboard, Action requestedAction);
+        ApiResponse<GameboardAndActionsDto> PerformBotAction(Gameboard gameboard);
+        ApiResponse<GameboardAndActionsDto> ParseFen(string fen);
     }
 
     public class ChessService : IChessService
@@ -39,48 +39,75 @@ namespace ChessAPI.Services
             return ListToPieceActionDto(actions);
         }
 
-        public GameboardAndActionsDto GetInitialBoard()
+        public ApiResponse<GameboardAndActionsDto> GetInitialBoard()
         {
-            var gameboard = new Gameboard();
-            gameboard.InitialiseStandardBoardState();
-
-            var actionsDto = GetActionsDto(gameboard);
-
-            return new GameboardAndActionsDto { Gameboard = gameboard, Actions = actionsDto };
+            try
+            {
+                var gameboard = new Gameboard();
+                gameboard.InitialiseStandardBoardState();
+                
+                var actionsDto = GetActionsDto(gameboard);
+                var successObject = new GameboardAndActionsDto { Gameboard = gameboard, Actions = actionsDto };
+                return ApiResponse<GameboardAndActionsDto>.CreateSuccessResponse(successObject);
+            }
+            catch (Exception e)
+            {
+                return ApiResponse<GameboardAndActionsDto>.CreateErrorResponse(e.Message);
+            }
         }
 
-        public GameboardAndActionsDto PerformAction(Gameboard gameboard, Action requestedAction)
+        public ApiResponse<GameboardAndActionsDto> PerformAction(Gameboard gameboard, Action requestedAction)
         {
-            gameboard.ProcessTurn(requestedAction);
-
-            var actionsDto = GetActionsDto(gameboard);
-
-            return new GameboardAndActionsDto { Gameboard = gameboard, Actions = actionsDto };
+            try
+            {
+                gameboard.ProcessTurn(requestedAction);
+                var actionsDto = GetActionsDto(gameboard);
+                var successObject = new GameboardAndActionsDto { Gameboard = gameboard, Actions = actionsDto };
+                return ApiResponse<GameboardAndActionsDto>.CreateSuccessResponse(successObject);
+            }
+            catch (Exception e)
+            {
+                return ApiResponse<GameboardAndActionsDto>.CreateErrorResponse(e.Message);
+            }
         }
 
-        public GameboardAndActionsDto PerformBotAction(Gameboard gameboard)
+        public ApiResponse<GameboardAndActionsDto> PerformBotAction(Gameboard gameboard)
         {
-            var chessBot = new ChessBot(gameboard);
+            try
+            {
+                var chessBot = new ChessBot(gameboard);
 
-            var stopwatch = Stopwatch.StartNew();
-            var chessBotAction = chessBot.CalculateBestAction(3);
+                var stopwatch = Stopwatch.StartNew();
+                var chessBotAction = chessBot.CalculateBestAction(3);
+                stopwatch.Stop();
 
-            stopwatch.Stop();
-            Console.WriteLine($"Execution time: {stopwatch.ElapsedMilliseconds}ms");
-            Console.WriteLine("-----------------");
+                Console.WriteLine($"Execution time: {stopwatch.ElapsedMilliseconds}ms");
+                Console.WriteLine("-----------------");
 
-            gameboard.ProcessTurn(chessBotAction);
-
-            var actionsDto = GetActionsDto(gameboard);
-
-            return new GameboardAndActionsDto { Gameboard = gameboard, Actions = actionsDto };
+                gameboard.ProcessTurn(chessBotAction);
+                var actionsDto = GetActionsDto(gameboard);
+                var successObject = new GameboardAndActionsDto { Gameboard = gameboard, Actions = actionsDto };
+                return ApiResponse<GameboardAndActionsDto>.CreateSuccessResponse(successObject);
+            }
+            catch (Exception e)
+            {
+                return ApiResponse<GameboardAndActionsDto>.CreateErrorResponse(e.Message);
+            }
         }
 
-        public GameboardAndActionsDto ParseFen(string fen)
+        public ApiResponse<GameboardAndActionsDto> ParseFen(string fen)
         {
-            var gameboard = ForsythEdwardsNotation.ParseFen(fen);
-            var actionsDto = GetActionsDto(gameboard);
-            return new GameboardAndActionsDto { Gameboard = gameboard, Actions = actionsDto };
+            try
+            {
+                var gameboard = ForsythEdwardsNotation.ParseFen(fen);
+                var actionsDto = GetActionsDto(gameboard);
+                var successObject = new GameboardAndActionsDto { Gameboard = gameboard, Actions = actionsDto };
+                return ApiResponse<GameboardAndActionsDto>.CreateSuccessResponse(successObject);
+            }
+            catch (Exception e)
+            {
+                return ApiResponse<GameboardAndActionsDto>.CreateErrorResponse(e.Message);
+            }
         }
     }
 }
