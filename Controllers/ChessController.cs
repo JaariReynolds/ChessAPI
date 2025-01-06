@@ -1,4 +1,5 @@
-﻿using ChessAPI.Models;
+﻿using Chess.Classes;
+using ChessAPI.Models;
 using ChessAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -45,16 +46,16 @@ namespace ChessAPI.Controllers
         [SwaggerOperation(
             Summary = "Performs the bot's Action on the provided board",
             Description = "Returns the new gameboard after the action is performed, as well as actions available to the next team.")]
-        public ActionResult<GameboardAndActionsDto> PerformBotAction([FromBody] PerformBotActionRequest botActionRequest)
+        public ActionResult<GameboardAndActionsDto> PerformBotAction([FromBody] Gameboard gameboard)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = _chessService.PerformBotAction(botActionRequest.Gameboard);
+            var result = _chessService.PerformBotAction(gameboard);
             return Ok(result);
         }
 
-        [HttpPost("fen")]
+        [HttpPost("importFen")]
         [SwaggerOperation(
             Summary = "Imports the provided FEN",
             Description = "Converts the FEN string into the equivalent Gameboard object, then returns the Gameboard as well as the available Actions for the current team.")]
@@ -64,6 +65,19 @@ namespace ChessAPI.Controllers
                 return BadRequest(ModelState);
 
             var result = _chessService.ParseFen(fenRequest.FenString);
+            return Ok(result);
+        }
+
+        [HttpPost("exportFen")]
+        [SwaggerOperation(
+            Summary = "Exports the FEN for the provided Gameboard",
+            Description = "Converts the provided Gameboard into the equivalent FEN string.")]
+        public ActionResult<string> GenerateFen([FromBody] Gameboard gameboard)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = _chessService.GenerateFen(gameboard);
             return Ok(result);
         }
     }
