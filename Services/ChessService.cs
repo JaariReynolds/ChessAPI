@@ -13,6 +13,7 @@ namespace ChessAPI.Services
         ApiResponse<GameboardAndActionsDto> PerformAction(Gameboard gameboard, Action requestedAction);
         ApiResponse<GameboardAndActionsDto> PerformBotAction(Gameboard gameboard);
         ApiResponse<GameboardAndActionsDto> ParseFen(string fen);
+        ApiResponse<string> GenerateFen(Gameboard gameboard);
     }
 
     public class ChessService : IChessService
@@ -45,7 +46,7 @@ namespace ChessAPI.Services
             {
                 var gameboard = new Gameboard();
                 gameboard.InitialiseStandardBoardState();
-                
+
                 var actionsDto = GetActionsDto(gameboard);
                 var successObject = new GameboardAndActionsDto { Gameboard = gameboard, Actions = actionsDto };
                 return ApiResponse<GameboardAndActionsDto>.CreateSuccessResponse(successObject);
@@ -107,6 +108,19 @@ namespace ChessAPI.Services
             catch (Exception e)
             {
                 return ApiResponse<GameboardAndActionsDto>.CreateErrorResponse(e.Message);
+            }
+        }
+
+        public ApiResponse<string> GenerateFen(Gameboard gameboard)
+        {
+            try
+            {
+                var generatedFen = ForsythEdwardsNotation.GenerateFen(gameboard);
+                return ApiResponse<string>.CreateSuccessResponse(generatedFen);
+            }
+            catch (Exception e)
+            {
+                return ApiResponse<string>.CreateErrorResponse(e.Message);
             }
         }
     }
