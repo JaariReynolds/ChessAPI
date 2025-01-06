@@ -44,7 +44,7 @@ namespace ChessAPI.Controllers
 
         [HttpPost("botAction")]
         [SwaggerOperation(
-            Summary = "Performs the bot's Action on the provided board",
+            Summary = "Performs the bot's Action on the provided board.",
             Description = "Returns the new gameboard after the action is performed, as well as actions available to the next team.")]
         public ActionResult<GameboardAndActionsDto> PerformBotAction([FromBody] Gameboard gameboard)
         {
@@ -57,7 +57,7 @@ namespace ChessAPI.Controllers
 
         [HttpPost("importFen")]
         [SwaggerOperation(
-            Summary = "Imports the provided FEN",
+            Summary = "Imports the provided FEN.",
             Description = "Converts the FEN string into the equivalent Gameboard object, then returns the Gameboard as well as the available Actions for the current team.")]
         public ActionResult<GameboardAndActionsDto> ImportFen([FromBody] ForsythEdwardsNotationRequest fenRequest)
         {
@@ -70,7 +70,7 @@ namespace ChessAPI.Controllers
 
         [HttpPost("exportFen")]
         [SwaggerOperation(
-            Summary = "Exports the FEN for the provided Gameboard",
+            Summary = "Exports the FEN for the provided Gameboard.",
             Description = "Converts the provided Gameboard into the equivalent FEN string.")]
         public ActionResult<string> ExportFen([FromBody] Gameboard gameboard)
         {
