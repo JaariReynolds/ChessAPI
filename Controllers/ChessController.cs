@@ -59,7 +59,7 @@ namespace ChessAPI.Controllers
         [SwaggerOperation(
             Summary = "Imports the provided FEN",
             Description = "Converts the FEN string into the equivalent Gameboard object, then returns the Gameboard as well as the available Actions for the current team.")]
-        public ActionResult<GameboardAndActionsDto> PostFen([FromBody] ForsythEdwardsNotationRequest fenRequest)
+        public ActionResult<GameboardAndActionsDto> ImportFen([FromBody] ForsythEdwardsNotationRequest fenRequest)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -72,7 +72,7 @@ namespace ChessAPI.Controllers
         [SwaggerOperation(
             Summary = "Exports the FEN for the provided Gameboard",
             Description = "Converts the provided Gameboard into the equivalent FEN string.")]
-        public ActionResult<string> GenerateFen([FromBody] Gameboard gameboard)
+        public ActionResult<string> ExportFen([FromBody] Gameboard gameboard)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
